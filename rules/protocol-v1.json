@@ -1,0 +1,235 @@
+{
+  "$comment": "CFWU ovarian mass rules file. Every clinical rule the engine applies lives here. sourceStatus: 'protocol' = transcribed from docs/protocol-source.pdf; 'spec' = from docs/spec-source.pdf; 'external-unverified' = NOT in the CFWU protocol, transcribed from the cited publication and requiring clinician verification before sign-off.",
+  "rulesVersion": "1.0.0-draft.1",
+  "protocol": {
+    "title": "Ovarian Mass Ultrasound: Guideline Review & Scanning and Reporting Protocol",
+    "date": "2026-11-07",
+    "owner": "@Indika",
+    "version": "2026-11-07"
+  },
+  "signOff": {
+    "status": "pending",
+    "clinician": null,
+    "secondChecker": null,
+    "date": null,
+    "notForClinicalUseBanner": "DRAFT RULES - NOT SIGNED OFF - NOT FOR CLINICAL USE"
+  },
+
+  "menopause": {
+    "definition": "postmenopausal = >=12 months amenorrhoea, or age >=50 after hysterectomy",
+    "source": "Protocol, Scanning protocol A.1",
+    "sourceStatus": "protocol"
+  },
+
+  "centreType": {
+    "default": "non-oncology",
+    "options": ["non-oncology", "oncology"],
+    "note": "Record as 'non-oncology centre' unless the patient is scanned in a tertiary gyn-oncology unit.",
+    "source": "Protocol, E.3",
+    "sourceStatus": "protocol"
+  },
+
+  "mandatoryFields": {
+    "fields": ["menopause", "solidComponentSize", "papillaryCount", "colourScore", "ascites"],
+    "source": "Protocol, Quality assurance - Worksheet",
+    "sourceStatus": "protocol"
+  },
+
+  "physiological": {
+    "maxDiameterMm": 30,
+    "requiresMenopause": "premenopausal",
+    "category": 1,
+    "description": "Follicle or corpus luteum <=3 cm in a premenopausal woman -> O-RADS 1; stop.",
+    "source": "Protocol, E.1",
+    "sourceStatus": "protocol"
+  },
+
+  "benignDescriptors": {
+    "precondition": { "largestDiameterMm": { "lt": 100 } },
+    "preconditionText": "all require largest diameter <10 cm",
+    "category": 2,
+    "evaluationOrder": "first match in list order is reported",
+    "items": [
+      {
+        "id": "BD1",
+        "text": "unilocular, ground-glass, premenopausal (endometrioma)",
+        "suggestedDiagnosis": "endometrioma",
+        "when": { "tumourType": ["unilocular"], "echogenicity": ["ground-glass"], "menopause": "premenopausal" }
+      },
+      {
+        "id": "BD2",
+        "text": "unilocular, mixed echogenicity with acoustic shadows, premenopausal (dermoid)",
+        "suggestedDiagnosis": "dermoid",
+        "when": { "tumourType": ["unilocular"], "echogenicity": ["mixed"], "acousticShadows": true, "menopause": "premenopausal" }
+      },
+      {
+        "id": "BD3",
+        "text": "unilocular, anechoic, regular walls",
+        "suggestedDiagnosis": null,
+        "when": { "tumourType": ["unilocular"], "echogenicity": ["anechoic"], "wallRegularity": "smooth" }
+      },
+      {
+        "id": "BD4",
+        "text": "any other unilocular cyst with regular walls",
+        "suggestedDiagnosis": null,
+        "when": { "tumourType": ["unilocular"], "wallRegularity": "smooth" }
+      }
+    ],
+    "source": "Protocol, E.2; Spec, Clinical logic step 2",
+    "sourceStatus": "protocol"
+  },
+
+  "simpleRules": {
+    "classification": {
+      "benign": "one or more B features and no M features",
+      "malignant": "one or more M features and no B features",
+      "inconclusive": "both B and M features, or neither"
+    },
+    "bFeatures": [
+      { "id": "B1", "text": "Unilocular cyst", "when": { "tumourType": ["unilocular"] } },
+      { "id": "B2", "text": "Solid components present, largest solid component <7 mm", "when": { "solidComponentPresent": true, "largestSolidDiameterMm": { "lt": 7 } } },
+      { "id": "B3", "text": "Acoustic shadows present", "when": { "acousticShadows": true } },
+      { "id": "B4", "text": "Smooth multilocular tumour, largest diameter <100 mm", "when": { "tumourType": ["multilocular"], "wallRegularity": "smooth", "largestDiameterMm": { "lt": 100 } } },
+      { "id": "B5", "text": "No blood flow (colour score 1)", "when": { "colourScore": [1] } }
+    ],
+    "mFeatures": [
+      { "id": "M1", "text": "Irregular solid tumour", "when": { "tumourType": ["solid"], "solidSurface": "irregular" } },
+      { "id": "M2", "text": "Ascites", "when": { "ascites": true } },
+      { "id": "M3", "text": "At least four papillary structures", "when": { "papillaryCount": { "gte": 4 } } },
+      { "id": "M4", "text": "Irregular multilocular-solid tumour, largest diameter >=100 mm", "when": { "tumourType": ["multilocular-solid"], "anyOf": [ { "wallRegularity": "irregular" }, { "solidSurface": "irregular" } ], "largestDiameterMm": { "gte": 100 } } },
+      { "id": "M5", "text": "Very strong blood flow (colour score 4)", "when": { "colourScore": [4] } }
+    ],
+    "source": "Feature definitions are NOT written out in the CFWU protocol (it names B1-B5/M1-M5 only). Transcribed from Timmerman D et al., Ultrasound Obstet Gynecol 2008 (IOTA Simple Rules). Must be checked against IOTA 2026 updated terms (UOG 2026;67:702-724). Spec acceptance tests 4, 5, 6 and 8 are consistent with these definitions.",
+    "sourceStatus": "external-unverified"
+  },
+
+  "adnex": {
+    "mode": "manual-entry",
+    "note": "ADNEX is entered from the IOTA app/online calculator (total risk + 5 subclass probabilities). The ADNEX formula is NOT implemented (Spec: Phase 4 only, after IOTA permission and validation).",
+    "sumToleranceWarningPct": 1.0,
+    "sumToleranceNote": "Arithmetic consistency check only (benign + total should equal 100; the four malignant subclasses should sum to total). Raises a warning, never a block.",
+    "source": "Spec, Clinical logic step 3 and fallback; Protocol, E.3",
+    "sourceStatus": "spec"
+  },
+
+  "orads": {
+    "categories": {
+      "0": "Incomplete",
+      "1": "Normal",
+      "2": "Almost certainly benign (<1%)",
+      "3": "Low risk (1-<10%)",
+      "4": "Intermediate (10-<50%)",
+      "5": "High (>=50%)"
+    },
+    "adnexBands": [
+      { "minInclusivePct": 0, "maxExclusivePct": 1, "category": 2 },
+      { "minInclusivePct": 1, "maxExclusivePct": 10, "category": 3 },
+      { "minInclusivePct": 10, "maxExclusivePct": 50, "category": 4 },
+      { "minInclusivePct": 50, "maxExclusivePct": null, "category": 5 }
+    ],
+    "combination": "Category from ADNEX band or O-RADS descriptors, whichever is higher; both shown.",
+    "multiLesion": "Each lesion gets its own score; management is driven by the highest.",
+    "source": "Protocol, E.5, IOTA 2026 mapping and ACR O-RADS US v2022 section; Spec, Clinical logic step 6",
+    "sourceStatus": "protocol"
+  },
+
+  "flags": {
+    "items": [
+      { "id": "M-FEATURE", "scope": "lesion", "text": "IOTA Simple Rules M feature present - same-day review by the reporting specialist before the patient leaves; gyn-oncology referral for any M feature." },
+      { "id": "ADNEX-TOTAL", "scope": "lesion", "thresholdPct": 10, "text": "ADNEX total risk >=10% - same-day review by the reporting specialist before the patient leaves; gynaecological oncology pathway." },
+      { "id": "ADNEX-METASTATIC", "scope": "lesion", "thresholdPct": 10, "text": "ADNEX metastatic risk >=10% - recommend search for a GI, breast or other primary, plus CEA and CA19-9." },
+      { "id": "ASCITES", "scope": "exam", "text": "Ascites (fluid outside the pouch of Douglas) present." },
+      { "id": "RMI", "scope": "exam", "thresholdExclusive": 200, "text": "RMI >200 - gynaecological oncology referral threshold used by Cancer Australia / RACGP." }
+    ],
+    "acknowledgementRequired": true,
+    "referrerCallRequired": true,
+    "source": "Spec, Clinical logic step 7; Protocol, E.6 and 'Additional triggers regardless of category'",
+    "sourceStatus": "protocol"
+  },
+
+  "rmi": {
+    "version": "RMI-I",
+    "formula": "U x M x CA125",
+    "uFeatures": ["multilocular", "solid", "bilateral", "ascites", "metastases"],
+    "uScoreByFeatureCount": [0, 1, 3],
+    "uScoreNote": "index = number of U features, capped at 2 (0 -> 0, 1 -> 1, >=2 -> 3)",
+    "mScore": { "premenopausal": 1, "postmenopausal": 3 },
+    "referralThresholdExclusive": 200,
+    "featureMapping": {
+      "multilocular": "any lesion of IOTA type multilocular or multilocular-solid",
+      "solid": "any lesion with a solid component or IOTA type solid",
+      "bilateral": "lesions recorded on both right and left",
+      "ascites": "exam ascites = yes",
+      "metastases": "upper-abdomen survey shows peritoneal nodules or omental cake"
+    },
+    "source": "Protocol names RMI-I, the five U features and the >200 threshold. U-score and M-score values are NOT in the protocol: transcribed from Jacobs I et al., BJOG 1990 (RMI-I). The feature mapping from IOTA fields is an engineering interpretation. Both need clinician verification.",
+    "sourceStatus": "external-unverified"
+  },
+
+  "management": {
+    "byCategory": {
+      "0": {
+        "typicalFindings": "Lesion not fully assessable (bowel gas, size, poor access)",
+        "recommendation": "Repeat TVUS/TAUS or MRI; state the reason",
+        "communication": "Routine"
+      },
+      "1": {
+        "typicalFindings": "Follicle or corpus luteum <=3 cm (premenopausal)",
+        "recommendation": "No follow-up",
+        "communication": "Routine"
+      },
+      "2": {
+        "typicalFindings": "Modified BD applies; simple, bilocular smooth, or classic benign lesion <10 cm",
+        "recommendation": "Asymptomatic: per O-RADS v2022 classic-lesion table (e.g. none for small simple cysts; rescan in 8-12 weeks for larger haemorrhagic/simple premenopausal cysts; 12-monthly for dermoid/endometrioma not excised)",
+        "communication": "Routine"
+      },
+      "3": {
+        "typicalFindings": "ADNEX 1-<10%; smooth multilocular, smooth solid with shadowing, unilocular with small solid component",
+        "recommendation": "Gynaecologist review; options: specialist US (if not already Level III), MRI with O-RADS MRI score, or short-interval US for cystic lesions; surgery in a general gynaecology unit if indicated",
+        "communication": "Report within 24 h to referrer"
+      },
+      "4": {
+        "typicalFindings": "ADNEX 10-<50%; multilocular-solid, unilocular-solid, solid with smooth contour and colour score 2-3",
+        "recommendation": "Gynaecologist with gyn-oncology consultation, or direct gyn-oncology referral; MRI for characterisation; CA125 +/- CEA/CA19-9 if not done",
+        "communication": "Phone referrer same day"
+      },
+      "5": {
+        "typicalFindings": "ADNEX >=50%; >=4 papillary projections, irregular solid, ascites/peritoneal nodules",
+        "recommendation": "Urgent gyn-oncology referral (e.g. Westmead Hospital gynaecological oncology); CT chest/abdomen/pelvis per gyn-onc protocol",
+        "communication": "Phone referrer same day; document time and recipient"
+      }
+    },
+    "byMenopause": {},
+    "byMenopauseNote": "The protocol management table is not split by menopausal status. Add premenopausal/postmenopausal overrides here (same shape as byCategory) once the protocol owner provides them.",
+    "additionalTriggers": {
+      "M-FEATURE": "Any IOTA M feature: gyn-oncology referral regardless of category.",
+      "ADNEX-METASTATIC": "ADNEX metastatic risk >=10%: recommend search for a GI, breast or other primary, plus CEA and CA19-9.",
+      "RMI": "RMI >200 (CA125 known): gynaecological oncology referral."
+    },
+    "verbalCommunicationCategories": [4, 5],
+    "followUp": "Compare with the prior study, state interval change in size and morphology, re-run the two-step strategy, and stop surveillance when the lesion resolves or after stability per O-RADS v2022 (management to be verified against the current ACR tables before go-live).",
+    "source": "Protocol, Management recommendations by category",
+    "sourceStatus": "protocol"
+  },
+
+  "specialSituations": {
+    "acute": {
+      "conditions": ["torsion", "ectopic", "toa-pid"],
+      "text": "Suspected torsion, ectopic, TOA/PID: report descriptively, do not assign O-RADS; urgent verbal communication."
+    },
+    "pregnancy": "Pregnancy: same lexicon; ADNEX is not yet validated in pregnancy - interpret with caution; decidualised endometriomas can mimic malignancy.",
+    "highRisk": "High-risk patient (BRCA/Lynch): apply the protocol, but lower the threshold for specialist referral; O-RADS management may be modified by clinical risk.",
+    "ovariesNotVisualised": "Ovaries not visualised: document; transabdominal attempt; state 'ovaries not visualised' rather than 'normal'.",
+    "upperAbdomenSurvey": "Suspicious lesion (O-RADS >=4 or any M feature): transabdominal survey of the upper abdomen - ascites in Morison's pouch, omental thickening/cake, peritoneal nodules, liver surface, hydronephrosis, pleural effusion.",
+    "source": "Protocol, G. Special situations and C.6",
+    "sourceStatus": "protocol"
+  },
+
+  "review": {
+    "levelIIIRequiredForCategories": [3, 4, 5],
+    "levelIIIRequiredForSimpleRules": ["inconclusive"],
+    "text": "O-RADS 3-5 and all inconclusive lesions are reviewed by a Level III examiner (MFM/gynaecological sonologist) before the report is finalised.",
+    "source": "Protocol, Quality assurance - Expertise levels",
+    "sourceStatus": "protocol"
+  }
+}
