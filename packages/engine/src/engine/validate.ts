@@ -1,6 +1,6 @@
-import type { RulesFile } from '../rules.js';
-import type { AdnexManualEntry, ExamInput, LesionInput, ValidationIssue } from '../types.js';
-import { largest } from './match.js';
+import type { RulesFile } from '../rules';
+import type { AdnexManualEntry, ExamInput, LesionInput, ValidationIssue } from '../types';
+import { largest } from './match';
 
 const err = (field: string, message: string, lesionId?: string): ValidationIssue => ({ severity: 'error', field, message, lesionId });
 const warn = (field: string, message: string, lesionId?: string): ValidationIssue => ({ severity: 'warning', field, message, lesionId });

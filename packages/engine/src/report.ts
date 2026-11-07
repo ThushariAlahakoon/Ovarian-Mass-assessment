@@ -1,9 +1,9 @@
 // Plain-text report following the protocol's "Structured report template".
 // This text is what gets pasted into Gentu (Spec, Report output).
 
-import { categoryLabel, type RulesFile } from './rules.js';
-import type { ExamRecord } from './record.js';
-import type { LesionAssessment, LesionInput, OvaryFinding, Side } from './types.js';
+import { categoryLabel, type RulesFile } from './rules';
+import type { ExamRecord } from './record';
+import type { LesionAssessment, LesionInput, OvaryFinding, Side } from './types';
 
 const yn = (b: boolean | null | undefined) => (b ? 'Y' : 'N');
 const dims = (d: readonly number[] | null | undefined) => (d && d.length ? `${d.join(' x ')} mm` : '');
@@ -64,8 +64,9 @@ function riskBlock(a: LesionAssessment, r: ExamRecord, rules: RulesFile): string
   if (a.status === 'assessed') {
     const suggested = a.orads?.suggested ?? null;
     const d = r.decisions[a.lesionId];
-    if (d?.overridden && suggested !== null) {
-      out.push(`    O-RADS US v2022: ${categoryLabel(rules, d.finalCategory)} (clinician-assigned; engine suggested ${categoryLabel(rules, suggested)}. Reason: ${d.overrideReason})`);
+    if (d?.overridden) {
+      const engine = suggested !== null ? `engine suggested ${categoryLabel(rules, suggested)}` : 'no engine suggestion';
+      out.push(`    O-RADS US v2022: ${categoryLabel(rules, d.finalCategory)} (clinician-assigned; ${engine}. Reason: ${d.overrideReason})`);
     } else {
       const c = d?.finalCategory ?? suggested;
       out.push(`    O-RADS US v2022: ${c === null ? 'not yet assigned' : categoryLabel(rules, c)}${d ? '' : ' (suggested - not yet confirmed)'}`);
@@ -133,8 +134,8 @@ export function generateReportText(r: ExamRecord, rules: RulesFile): string {
     const adnex = la.adnex ? `, ADNEX ${pct(la.adnex.total)}` : '';
     const oradsText = la.status === 'excluded-acute' ? 'O-RADS not assigned (acute presentation)' : `O-RADS ${cat ?? '-'}`;
     lines.push(`  ${n++}. ${dx} ${l.side} ${dims(l.diametersMm)}, ${oradsText}${adnex}.`);
-    const recText = d?.managementText ?? (cat !== null && la.management
-      ? (cat === la.management.category ? la.management.recommendation : rules.management.byCategory[String(cat)]?.recommendation)
+    const recText = d?.managementText ?? (cat !== null
+      ? (la.management && cat === la.management.category ? la.management.recommendation : rules.management.byCategory[String(cat)]?.recommendation ?? null)
       : null);
     if (la.status === 'excluded-acute') {
       lines.push(`     Recommendation: ${rules.specialSituations.acute.text}`);
@@ -143,7 +144,10 @@ export function generateReportText(r: ExamRecord, rules: RulesFile): string {
       lines.push(`     Recommendation: ${recText.replace(/\.?$/, '.')}${comm ? ` Communication: ${comm}.` : ''}`);
       if (d?.managementText) lines.push(`     (Management text edited by reporting clinician. Reason: ${d.managementEditReason})`);
     }
-    for (const extra of la.management?.additional ?? []) lines.push(`     ${extra}`);
+    for (const t of la.triggers) {
+      const extra = rules.management.additionalTriggers[t];
+      if (extra) lines.push(`     ${extra}`);
+    }
   }
   for (const notice of a.notices) {
     if (notice !== rules.signOff.notForClinicalUseBanner) lines.push(`  Note: ${notice}`);

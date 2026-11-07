@@ -1,5 +1,5 @@
 // Synthetic test data only. No real patients.
-import type { ExamInput, LesionInput, User } from '../src/types.js';
+import type { ExamInput, LesionInput, User } from '../src/types';
 
 export const AT = '2026-11-07T10:00:00+11:00';
 

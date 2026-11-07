@@ -1,5 +1,5 @@
 import defaultRulesJson from '../rules/protocol-v1.json';
-import type { ColourScore, ORadsCategory } from './types.js';
+import type { ColourScore, ORadsCategory } from './types';
 
 /** Declarative condition used by the rules file. All keys are ANDed. */
 export interface Condition {

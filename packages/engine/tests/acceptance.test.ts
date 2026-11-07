@@ -1,12 +1,12 @@
 // The 12 rule-engine acceptance tests from docs/spec.md ("Rule-engine acceptance tests (minimum)").
 import { describe, expect, it } from 'vitest';
-import { assessExam, assessLesion } from '../src/engine/assess.js';
-import { defaultRules as rules } from '../src/rules.js';
+import { assessExam, assessLesion } from '../src/engine/assess';
+import { defaultRules as rules } from '../src/rules';
 import {
   acknowledgeFlag, amend, confirmCategory, createExam, logReferrerCall, overrideCategory, RecordError, sign, signingBlockers,
-} from '../src/record.js';
-import { generateReportText } from '../src/report.js';
-import { AT, clinicianIII, exam, lesion, sonographer } from './fixtures.js';
+} from '../src/record';
+import { generateReportText } from '../src/report';
+import { AT, clinicianIII, exam, lesion, sonographer } from './fixtures';
 
 describe('Spec acceptance tests', () => {
   it('1. 34 y, premenopausal, unilocular, ground-glass, 45 mm -> BD1 -> O-RADS 2; no flags', () => {

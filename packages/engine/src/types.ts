@@ -156,6 +156,8 @@ export interface LesionAssessment {
   orads: ORadsOutcome | null;
   flags: Flag[];
   management: ManagementOutcome | null;
+  /** Additional-trigger ids (M-FEATURE, ADNEX-METASTATIC, RMI) that apply regardless of category. */
+  triggers: string[];
   requiresLevelIIIReview: boolean;
 }
 

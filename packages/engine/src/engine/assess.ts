@@ -1,13 +1,13 @@
 // Pure rules engine. Order per lesion follows Protocol E (Risk assessment - apply in order)
 // and Spec "Rule engine, in order (per lesion)".
 
-import { isSignedOff, type RulesFile } from '../rules.js';
+import { isSignedOff, type RulesFile } from '../rules';
 import type {
   AdnexManualEntry, BenignDescriptorResult, ExamAssessment, ExamInput, Flag, LesionAssessment,
   LesionInput, ManagementOutcome, Menopause, ORadsCategory, ORadsOutcome, RmiOutcome, SimpleRulesOutcome,
-} from '../types.js';
-import { factsFor, matches, type LesionFacts } from './match.js';
-import { validateExam, validateLesion } from './validate.js';
+} from '../types';
+import { factsFor, matches, type LesionFacts } from './match';
+import { validateExam, validateLesion } from './validate';
 
 // ---------- Step 2: modified benign descriptors ----------
 export function benignDescriptor(f: LesionFacts, rules: RulesFile): BenignDescriptorResult {
@@ -92,6 +92,7 @@ export function assessLesion(lesion: LesionInput, exam: ExamInput, rules: RulesF
     orads: null,
     flags: [],
     management: null,
+    triggers: [],
     requiresLevelIIIReview: false,
   };
 
@@ -117,14 +118,14 @@ export function assessLesion(lesion: LesionInput, exam: ExamInput, rules: RulesF
 
   // Special situation: acute presentation -> descriptive only, no O-RADS.
   if (exam.acuteCondition) {
-    return { ...base, status: 'excluded-acute', simpleRules: sr, flags };
+    return { ...base, status: 'excluded-acute', simpleRules: sr, flags, triggers };
   }
 
   // Step 1: physiological.
   if (lesion.physiological) {
     const cat = rules.physiological.category as ORadsCategory;
     return {
-      ...base, physiological: true, simpleRules: sr, flags,
+      ...base, physiological: true, simpleRules: sr, flags, triggers,
       orads: { fromAdnex: null, fromDescriptors: null, suggested: cat, basis: 'Physiological (follicle / corpus luteum <=3 cm, premenopausal)' },
       management: managementFor(cat, menopause, triggers, rules),
     };
@@ -175,6 +176,7 @@ export function assessLesion(lesion: LesionInput, exam: ExamInput, rules: RulesF
     orads,
     flags,
     management: suggested === null ? null : managementFor(suggested, menopause, triggers, rules),
+    triggers,
     requiresLevelIIIReview,
   };
 }
@@ -214,6 +216,7 @@ export function assessExam(exam: ExamInput, rules: RulesFile): ExamAssessment {
   if (flags.some((f) => f.id === 'RMI')) {
     for (const l of lesions) {
       const extra = rules.management.additionalTriggers['RMI'];
+      if (!l.triggers.includes('RMI')) l.triggers.push('RMI');
       if (l.management && extra && !l.management.additional.includes(extra)) l.management.additional.push(extra);
     }
   }

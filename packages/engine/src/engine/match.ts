@@ -1,5 +1,5 @@
-import type { Condition, NumericTest } from '../rules.js';
-import type { LesionInput, Menopause, PapillaryCount } from '../types.js';
+import type { Condition, NumericTest } from '../rules';
+import type { LesionInput, Menopause, PapillaryCount } from '../types';
 
 /** Facts a rules-file condition can test, derived from one lesion plus its exam. */
 export interface LesionFacts {

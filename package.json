@@ -1,17 +1,12 @@
 {
-  "name": "cfwu-ovarian-mass-rules-engine",
-  "version": "0.1.0",
+  "name": "cfwu-ovarian-mass-assessment",
   "private": true,
-  "description": "Phase 0 rules engine for the CFWU ovarian mass protocol (IOTA two-step strategy + O-RADS US v2022). Synthetic data only.",
-  "type": "module",
+  "workspaces": ["packages/engine", "apps/web"],
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@types/node": "22.15.3",
-    "typescript": "5.8.3",
-    "vitest": "3.2.4"
+    "test": "npm run test -w @cfwu/engine",
+    "typecheck": "npm run typecheck -w @cfwu/engine && npm run typecheck -w @cfwu/web",
+    "dev": "npm run dev -w @cfwu/web",
+    "build": "npm run build -w @cfwu/web",
+    "e2e": "npm run e2e -w @cfwu/web"
   }
 }

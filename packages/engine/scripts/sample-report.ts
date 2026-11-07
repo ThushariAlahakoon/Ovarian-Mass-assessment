@@ -1,8 +1,8 @@
 // Prints a synthetic O-RADS 4 report: npx vite-node scripts/sample-report.ts
-import { defaultRules as rules } from '../src/rules.js';
-import { acknowledgeFlag, confirmCategory, createExam, logReferrerCall, sign } from '../src/record.js';
-import { generateReportText } from '../src/report.js';
-import { AT, clinicianIII, exam, lesion, sonographer } from '../tests/fixtures.js';
+import { defaultRules as rules } from '../src/rules';
+import { acknowledgeFlag, confirmCategory, createExam, logReferrerCall, sign } from '../src/record';
+import { generateReportText } from '../src/report';
+import { AT, clinicianIII, exam, lesion, sonographer } from '../tests/fixtures';
 
 const e = exam({ age: 52, menopause: 'postmenopausal', indication: 'Pelvic pain', ca125: { value: 48, date: '2026-11-01' },
   uterus: 'Normal size; endometrium 3 mm, homogeneous', ovaries: { right: { status: 'contains-lesion' }, left: { status: 'not-visualised' } } },

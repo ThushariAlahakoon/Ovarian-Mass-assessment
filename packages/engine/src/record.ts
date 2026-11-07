@@ -1,9 +1,9 @@
 // Examination record lifecycle as pure functions: each call returns a new record.
 // "The app suggests; the reporting clinician always confirms or overrides ... with the reason recorded."
 
-import { assessExam } from './engine/assess.js';
-import type { RulesFile } from './rules.js';
-import type { ExamAssessment, ExamInput, ORadsCategory, User } from './types.js';
+import { assessExam } from './engine/assess';
+import type { RulesFile } from './rules';
+import type { ExamAssessment, ExamInput, ORadsCategory, User } from './types';
 
 export type ExamStatus = 'draft' | 'for-review' | 'signed' | 'amended';
 
@@ -85,6 +85,12 @@ export function updateInput(r: ExamRecord, input: ExamInput, user: User, at: str
     ...r, input, assessment, decisions, acknowledgedFlags,
     audit: [...r.audit, { at, userId: user.id, action: 'update-input' }],
   };
+}
+
+/** Sonographer (or student) hands the exam to the reporting clinician. */
+export function submitForReview(r: ExamRecord, user: User, at: string): ExamRecord {
+  if (r.status !== 'draft' && r.status !== 'amended') throw new RecordError('Only a draft or amended exam can be submitted for review.');
+  return { ...r, status: 'for-review', audit: [...r.audit, { at, userId: user.id, action: 'submit-for-review' }] };
 }
 
 function requireClinician(user: User): void {

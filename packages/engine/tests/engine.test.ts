@@ -1,10 +1,10 @@
 // Unit tests: thresholds at their boundaries, rule ordering, rules-file integrity, record gate.
 import { describe, expect, it } from 'vitest';
-import { assessExam, managementFor, oradsFromAdnex, rmi } from '../src/engine/assess.js';
-import { defaultRules as rules, validateRulesFile, type RulesFile } from '../src/rules.js';
-import { confirmCategory, createExam, editManagement, logReferrerCall, sign, signingBlockers, updateInput } from '../src/record.js';
-import { generateReportText } from '../src/report.js';
-import { AT, clinicianII, clinicianIII, exam, lesion, sonographer, student } from './fixtures.js';
+import { assessExam, managementFor, oradsFromAdnex, rmi } from '../src/engine/assess';
+import { defaultRules as rules, validateRulesFile, type RulesFile } from '../src/rules';
+import { confirmCategory, createExam, editManagement, logReferrerCall, overrideCategory, sign, signingBlockers, submitForReview, updateInput } from '../src/record';
+import { generateReportText } from '../src/report';
+import { AT, clinicianII, clinicianIII, exam, lesion, sonographer, student } from './fixtures';
 
 describe('rules file', () => {
   it('passes structural validation', () => {
@@ -215,5 +215,23 @@ describe('record gate and roles', () => {
   it('a signed report cannot be edited', () => {
     const r = sign(confirmCategory(createExam('s', exam(), sonographer, AT, rules), 'R1', clinicianIII, AT), clinicianIII, AT, rules);
     expect(() => updateInput(r, exam(), sonographer, AT, rules)).toThrow(/amendment/);
+  });
+  it('submit for review moves a draft to for-review and is audited', () => {
+    const r = submitForReview(createExam('sfr', exam(), sonographer, AT, rules), sonographer, AT);
+    expect(r.status).toBe('for-review');
+    expect(r.audit.at(-1)?.action).toBe('submit-for-review');
+    expect(() => submitForReview(r, sonographer, AT)).toThrow();
+  });
+  it('clinician-assigned category with no engine suggestion keeps reason, recommendation and M-feature trigger in the report', () => {
+    const l = lesion({ tumourType: 'multilocular-solid', wallRegularity: 'irregular', echogenicity: 'low-level', diametersMm: [130, 110, 95],
+      solidComponentPresent: true, solidDiametersMm: [50, 40, 35], solidSurface: 'irregular', papillaryCount: 1, colourScore: 4 });
+    let r = createExam('nosug', exam({ menopause: 'postmenopausal', ascites: true }, [l]), sonographer, AT, rules);
+    expect(r.assessment.lesions[0]!.orads?.suggested).toBeNull();
+    expect(r.assessment.lesions[0]!.triggers).toContain('M-FEATURE');
+    r = overrideCategory(r, 'R1', 5, 'Descriptor-based', clinicianIII, AT);
+    const text = generateReportText(r, rules);
+    expect(text).toMatch(/O-RADS 5 - High .*no engine suggestion\. Reason: Descriptor-based/);
+    expect(text).toContain(rules.management.byCategory['5']!.recommendation);
+    expect(text).toContain(rules.management.additionalTriggers['M-FEATURE']!);
   });
 });
