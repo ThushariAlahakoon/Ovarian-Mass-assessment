@@ -229,6 +229,8 @@ export function assessExam(exam: ExamInput, rules: RulesFile): ExamAssessment {
   const highestSuggested = maxCategory(lesions.map((l) => l.orads?.suggested ?? null));
   const suspicious = (highestSuggested !== null && highestSuggested >= 4) || lesions.some((l) => (l.simpleRules?.mFeatures.length ?? 0) > 0);
   if (suspicious && !exam.upperAbdomen?.assessed) notices.push(s.upperAbdomenSurvey);
+  const needIII = lesions.filter((l) => l.requiresLevelIIIReview).map((l) => l.lesionId);
+  if (needIII.length) notices.push(`Level III review advised (${needIII.join(', ')}): ${rules.review.text}`);
   if (lesions.some((l) => l.adnexRequired)) notices.push('ADNEX required for at least one lesion: no benign descriptor applies.');
 
   return {

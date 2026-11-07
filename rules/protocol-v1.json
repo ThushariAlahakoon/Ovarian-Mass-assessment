@@ -1,6 +1,6 @@
 {
   "$comment": "CFWU ovarian mass rules file. Every clinical rule the engine applies lives here. sourceStatus: 'protocol' = transcribed from docs/protocol-source.pdf; 'spec' = from docs/spec-source.pdf; 'external-unverified' = NOT in the CFWU protocol, transcribed from the cited publication and requiring clinician verification before sign-off.",
-  "rulesVersion": "1.0.0-draft.3",
+  "rulesVersion": "1.0.0-draft.4",
   "protocol": {
     "title": "Ovarian Mass Ultrasound: Guideline Review & Scanning and Reporting Protocol",
     "date": "2026-11-07",
@@ -230,6 +230,8 @@
   "review": {
     "levelIIIRequiredForCategories": [3, 4, 5],
     "levelIIIRequiredForSimpleRules": ["inconclusive"],
+    "enforceAtSigning": false,
+    "enforceAtSigningNote": "Clinician decision 2026-11-07: any CFWU reporting clinician may sign, whatever their expertise level. Level III review is shown as advisory only. This differs from the protocol QA text below; set to true to block signing by non-Level III clinicians.",
     "text": "O-RADS 3-5 and all inconclusive lesions are reviewed by a Level III examiner (MFM/gynaecological sonologist) before the report is finalised.",
     "source": "Protocol, Quality assurance - Expertise levels",
     "sourceStatus": "protocol"

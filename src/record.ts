@@ -184,7 +184,7 @@ export function signingBlockers(r: ExamRecord, signer: User, rules: RulesFile): 
     if (!r.decisions[l.lesionId]) b.push(`${l.lesionId}: confirm or override the O-RADS category.`);
     const cat = finalCategory(r, l.lesionId) ?? l.orads?.suggested ?? null;
     const needsIII = l.requiresLevelIIIReview || (cat !== null && rules.review.levelIIIRequiredForCategories.includes(cat));
-    if (needsIII && signer.level !== 'III') b.push(`${l.lesionId}: ${rules.review.text}`);
+    if (needsIII && rules.review.enforceAtSigning && signer.level !== 'III') b.push(`${l.lesionId}: ${rules.review.text}`);
   }
 
   const unacked = r.assessment.flags.filter((f) => !r.acknowledgedFlags[f.key]);

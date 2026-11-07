@@ -78,8 +78,9 @@ No clinical rule is written into the TypeScript code. The code reads every thres
 - lesions without a confirmed or overridden category
 - unacknowledged red flags
 - no logged referrer call when there are flags, O-RADS 4–5 or an acute presentation
-- a signer below Level III when Level III review is required
-- a signer who isn't a reporting clinician
+- a signer who isn't a reporting clinician (any CFWU reporting clinician can sign, at any level)
+
+Level III review of O-RADS 3–5 and inconclusive lesions is advisory: it appears as a note on the report. Setting `review.enforceAtSigning` to `true` in the rules file turns it back into a hard block.
 
 ## Changing the rules
 

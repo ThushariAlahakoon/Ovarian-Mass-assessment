@@ -44,9 +44,9 @@ These rules are marked `"sourceStatus": "external-unverified"` in the rules file
    - the presentation is acute
 
    O-RADS 3 ("report within 24 h") does not block signing. **Confirmed 2026-11-07.**
-10. **Level III review.** O-RADS 3–5 and Simple Rules "inconclusive" lesions can only be signed by a Level III clinician (protocol, QA). This means a lesion with no B or M features, such as a small unilocular-solid lesion, also needs Level III. Confirm.
+10. ~~**Level III review.**~~ **Answered 2026-11-07:** any CFWU reporting clinician may sign, whatever their level. For O-RADS 3–5 and inconclusive lesions, the report shows "Level III review advised" as a note, but signing isn't blocked. Students still can't sign. This differs from the protocol's QA section ("reviewed by a Level III examiner before the report is finalised"), so **the protocol text should be updated to match** (or set `review.enforceAtSigning` back to `true`). Rules file version 1.0.0-draft.4.
 11. **BD lesion with an ADNEX result also entered.** The engine ignores ADNEX for O-RADS when a BD applies, as in the protocol's step order. A clinician-entered descriptor category can still raise the category.
-12. **Upper-abdomen survey.** For O-RADS ≥4 or any M feature, the engine shows a reminder but doesn't block signing. Should it block?
+12. **Upper-abdomen survey.** For O-RADS ≥4 or any M feature, the engine shows a reminder but doesn't block signing. **Confirmed 2026-11-07: reminder only, no block.**
 
 ## C. Not clinical, still to decide
 

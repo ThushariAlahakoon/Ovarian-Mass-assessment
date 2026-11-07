@@ -83,7 +83,7 @@ export interface RulesFile {
     ovariesNotVisualised: string;
     upperAbdomenSurvey: string;
   };
-  review: { levelIIIRequiredForCategories: number[]; levelIIIRequiredForSimpleRules: string[]; text: string };
+  review: { levelIIIRequiredForCategories: number[]; levelIIIRequiredForSimpleRules: string[]; enforceAtSigning: boolean; text: string };
 }
 
 const CONDITION_KEYS = new Set([

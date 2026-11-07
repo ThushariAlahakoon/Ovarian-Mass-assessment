@@ -174,13 +174,24 @@ describe('exam-level behaviour', () => {
 });
 
 describe('record gate and roles', () => {
-  it('students and Level II clinicians cannot sign an O-RADS 3 lesion', () => {
-    const e = exam({}, [lesion({ tumourType: 'multilocular', diametersMm: [70, 60, 50], adnex: { withCa125: false, total: 4, benign: 96, borderline: 2, stageI: 1, stageIIToIV: 0.5, metastatic: 0.5 } })]);
-    let r = createExam('gate', e, student, AT, rules);
+  const o3 = () => exam({}, [lesion({ tumourType: 'multilocular', diametersMm: [70, 60, 50], adnex: { withCa125: false, total: 4, benign: 96, borderline: 2, stageI: 1, stageIIToIV: 0.5, metastatic: 0.5 } })]);
+
+  it('any CFWU reporting clinician can sign an O-RADS 3 lesion; Level III review is advisory; students cannot sign', () => {
+    let r = createExam('gate', o3(), student, AT, rules);
     expect(() => confirmCategory(r, 'R1', student, AT)).toThrow();
-    r = confirmCategory(r, 'R1', clinicianIII, AT);
-    expect(signingBlockers(r, clinicianII, rules).join(' ')).toMatch(/Level III/);
-    expect(signingBlockers(r, clinicianIII, rules)).toEqual([]);
+    expect(signingBlockers(r, student, rules)).toContain('Only a reporting clinician can sign.');
+    r = confirmCategory(r, 'R1', clinicianII, AT);
+    expect(signingBlockers(r, clinicianII, rules)).toEqual([]);
+    expect(r.assessment.notices.some((n) => n.startsWith('Level III review advised (R1)'))).toBe(true);
+    expect(generateReportText(r, rules)).toMatch(/Level III review advised/);
+  });
+
+  it('if the rules file re-enables enforcement, a Level II clinician is blocked', () => {
+    const strict = structuredClone(rules) as RulesFile;
+    strict.review.enforceAtSigning = true;
+    const r = confirmCategory(createExam('gate2', o3(), sonographer, AT, strict), 'R1', clinicianIII, AT);
+    expect(signingBlockers(r, clinicianII, strict).join(' ')).toMatch(/Level III/);
+    expect(signingBlockers(r, clinicianIII, strict)).toEqual([]);
   });
   it('O-RADS 4 requires the referrer call even without other flags', () => {
     const e = exam({}, [lesion({ descriptorCategory: 4 })]);
