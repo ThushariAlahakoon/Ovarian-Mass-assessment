@@ -1,6 +1,6 @@
 {
   "$comment": "CFWU ovarian mass rules file. Every clinical rule the engine applies lives here. sourceStatus: 'protocol' = transcribed from docs/protocol-source.pdf; 'spec' = from docs/spec-source.pdf; 'external-unverified' = NOT in the CFWU protocol, transcribed from the cited publication and requiring clinician verification before sign-off.",
-  "rulesVersion": "1.0.0-draft.2",
+  "rulesVersion": "1.0.0-draft.3",
   "protocol": {
     "title": "Ovarian Mass Ultrasound: Guideline Review & Scanning and Reporting Protocol",
     "date": "2026-11-07",
@@ -54,13 +54,15 @@
         "id": "BD1",
         "text": "unilocular, ground-glass, premenopausal (endometrioma)",
         "suggestedDiagnosis": "endometrioma",
-        "when": { "tumourType": ["unilocular"], "echogenicity": ["ground-glass"], "menopause": "premenopausal" }
+        "when": { "tumourType": ["unilocular"], "echogenicity": ["ground-glass"], "wallRegularity": "smooth", "menopause": "premenopausal" },
+        "note": "Regular walls required (clinician decision, 2026-11-07)"
       },
       {
         "id": "BD2",
         "text": "unilocular, mixed echogenicity with acoustic shadows, premenopausal (dermoid)",
         "suggestedDiagnosis": "dermoid",
-        "when": { "tumourType": ["unilocular"], "echogenicity": ["mixed"], "acousticShadows": true, "menopause": "premenopausal" }
+        "when": { "tumourType": ["unilocular"], "echogenicity": ["mixed"], "acousticShadows": true, "wallRegularity": "smooth", "menopause": "premenopausal" },
+        "note": "Regular walls required (clinician decision, 2026-11-07)"
       },
       {
         "id": "BD3",
@@ -143,7 +145,7 @@
     ],
     "acknowledgementRequired": true,
     "referrerCallRequired": true,
-    "source": "Spec, Clinical logic step 7; Protocol, E.6 and 'Additional triggers regardless of category'",
+    "source": "Spec, Clinical logic step 7; Protocol, E.6 and 'Additional triggers regardless of category'. All five flags confirmed by the clinician on 2026-11-07.",
     "sourceStatus": "protocol"
   },
 

@@ -42,6 +42,12 @@ describe('benign descriptors', () => {
     const post = assessExam(exam({ menopause: 'postmenopausal', age: 60 }, [lesion({ echogenicity: 'ground-glass' })]), rules);
     expect(post.lesions[0]!.benignDescriptor?.id).toBe('BD4'); // smooth unilocular, any other content
   });
+  it('BD1 and BD2 require regular walls', () => {
+    const bd1 = assessExam(exam({}, [lesion({ echogenicity: 'ground-glass', wallRegularity: 'irregular' })]), rules).lesions[0]!;
+    expect(bd1.benignDescriptor?.applies).toBe(false);
+    const bd2 = assessExam(exam({}, [lesion({ echogenicity: 'mixed', acousticShadows: true, wallRegularity: 'irregular' })]), rules).lesions[0]!;
+    expect(bd2.benignDescriptor?.applies).toBe(false);
+  });
   it('BD4 covers other smooth unilocular content; irregular walls get no BD', () => {
     expect(assessExam(exam({}, [lesion({ echogenicity: 'haemorrhagic' })]), rules).lesions[0]!.benignDescriptor?.id).toBe('BD4');
     expect(assessExam(exam({}, [lesion({ wallRegularity: 'irregular' })]), rules).lesions[0]!.benignDescriptor?.applies).toBe(false);

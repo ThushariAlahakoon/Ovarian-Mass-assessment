@@ -34,16 +34,16 @@ These rules are marked `"sourceStatus": "external-unverified"` in the rules file
 
 ## B. Ambiguities in the protocol: the engine's current interpretation
 
-5. **Do BD1 and BD2 require regular walls?** The protocol doesn't say, so the engine doesn't require them. BD3 and BD4 do require regular walls. If a lesion matches more than one BD, the engine reports the first match in order.
+5. ~~**Do BD1 and BD2 require regular walls?**~~ **Answered 2026-11-07:** yes. All four BDs now require regular walls (rules file version 1.0.0-draft.3). If a lesion matches more than one BD, the engine reports the first match in order.
 6. **Management by menopausal status.** The spec says management is looked up by category *and* menopausal status, but the protocol's table has one row per category. The engine supports separate pre- and postmenopausal wording (`management.byMenopause`), but that section is currently empty.
 7. **O-RADS 2 follow-up detail.** The protocol defers this to "the O-RADS v2022 classic-lesion table", which isn't transcribed. The table needs to be transcribed, with a second clinician checking it (spec, sourcing table). The protocol also says management must be "verified against the current ACR tables before go-live".
-8. **Escalation flags.** The protocol's "Escalation in clinic" step lists M feature, ADNEX ≥10% and metastatic ≥10%. The spec adds ascites and RMI >200. The engine follows the spec (all five). Confirm.
+8. **Escalation flags.** The protocol's "Escalation in clinic" step lists M feature, ADNEX ≥10% and metastatic ≥10%. The spec adds ascites and RMI >200. The engine follows the spec (all five). **Confirmed 2026-11-07.**
 9. **Is the referrer call mandatory?** The engine requires a logged referrer call before signing whenever:
    - any red flag is present
    - the final category is O-RADS 4–5
    - the presentation is acute
 
-   O-RADS 3 ("report within 24 h") does not block signing. Confirm.
+   O-RADS 3 ("report within 24 h") does not block signing. **Confirmed 2026-11-07.**
 10. **Level III review.** O-RADS 3–5 and Simple Rules "inconclusive" lesions can only be signed by a Level III clinician (protocol, QA). This means a lesion with no B or M features, such as a small unilocular-solid lesion, also needs Level III. Confirm.
 11. **BD lesion with an ADNEX result also entered.** The engine ignores ADNEX for O-RADS when a BD applies, as in the protocol's step order. A clinician-entered descriptor category can still raise the category.
 12. **Upper-abdomen survey.** For O-RADS ≥4 or any M feature, the engine shows a reminder but doesn't block signing. Should it block?
