@@ -1,6 +1,6 @@
 {
   "$comment": "CFWU ovarian mass rules file. Every clinical rule the engine applies lives here. sourceStatus: 'protocol' = transcribed from docs/protocol-source.pdf; 'spec' = from docs/spec-source.pdf; 'external-unverified' = NOT in the CFWU protocol, transcribed from the cited publication and requiring clinician verification before sign-off.",
-  "rulesVersion": "1.0.0-draft.1",
+  "rulesVersion": "1.0.0-draft.2",
   "protocol": {
     "title": "Ovarian Mass Ultrasound: Guideline Review & Scanning and Reporting Protocol",
     "date": "2026-11-07",
@@ -96,7 +96,7 @@
       { "id": "M1", "text": "Irregular solid tumour", "when": { "tumourType": ["solid"], "solidSurface": "irregular" } },
       { "id": "M2", "text": "Ascites", "when": { "ascites": true } },
       { "id": "M3", "text": "At least four papillary structures", "when": { "papillaryCount": { "gte": 4 } } },
-      { "id": "M4", "text": "Irregular multilocular-solid tumour, largest diameter >=100 mm", "when": { "tumourType": ["multilocular-solid"], "anyOf": [ { "wallRegularity": "irregular" }, { "solidSurface": "irregular" } ], "largestDiameterMm": { "gte": 100 } } },
+      { "id": "M4", "text": "Irregular multilocular-solid tumour, largest diameter >=100 mm", "when": { "tumourType": ["multilocular-solid"], "wallRegularity": "irregular", "largestDiameterMm": { "gte": 100 } }, "note": "Irregular = irregular walls/septa (clinician decision, 2026-11-07)" },
       { "id": "M5", "text": "Very strong blood flow (colour score 4)", "when": { "colourScore": [4] } }
     ],
     "source": "Feature definitions are NOT written out in the CFWU protocol (it names B1-B5/M1-M5 only). Transcribed from Timmerman D et al., Ultrasound Obstet Gynecol 2008 (IOTA Simple Rules). Must be checked against IOTA 2026 updated terms (UOG 2026;67:702-724). Spec acceptance tests 4, 5, 6 and 8 are consistent with these definitions.",
@@ -162,7 +162,7 @@
       "ascites": "exam ascites = yes",
       "metastases": "upper-abdomen survey shows peritoneal nodules or omental cake"
     },
-    "source": "Protocol names RMI-I, the five U features and the >200 threshold. U-score and M-score values are NOT in the protocol: transcribed from Jacobs I et al., BJOG 1990 (RMI-I). The feature mapping from IOTA fields is an engineering interpretation. Both need clinician verification.",
+    "source": "Protocol names RMI-I, the five U features and the >200 threshold. U-score and M-score values are NOT in the protocol: transcribed from Jacobs I et al., BJOG 1990 (RMI-I). The feature mapping from IOTA fields was confirmed by the clinician on 2026-11-07. The U-score and M-score values still need verification.",
     "sourceStatus": "external-unverified"
   },
 

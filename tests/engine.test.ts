@@ -83,6 +83,10 @@ describe('Simple Rules features', () => {
     expect(assessExam(exam({}, [ms(99)]), rules).lesions[0]!.simpleRules!.mFeatures.map((f) => f.id)).not.toContain('M4');
     expect(assessExam(exam({}, [ms(100)]), rules).lesions[0]!.simpleRules!.mFeatures.map((f) => f.id)).toContain('M4');
   });
+  it('M4 "irregular" means irregular walls/septa only - an irregular solid surface with smooth walls is not M4', () => {
+    const l = lesion({ tumourType: 'multilocular-solid', wallRegularity: 'smooth', solidSurface: 'irregular', solidComponentPresent: true, solidDiametersMm: [20, 15, 10], diametersMm: [120, 90, 80] });
+    expect(assessExam(exam({}, [l]), rules).lesions[0]!.simpleRules!.mFeatures.map((f) => f.id)).not.toContain('M4');
+  });
   it('M1 irregular solid tumour; M3 needs four or more papillary projections', () => {
     const solid = lesion({ tumourType: 'solid', echogenicity: null, solidComponentPresent: true, solidDiametersMm: [40, 30, 30], diametersMm: [40, 30, 30], solidSurface: 'irregular' });
     expect(assessExam(exam({}, [solid]), rules).lesions[0]!.simpleRules!.mFeatures.map((f) => f.id)).toContain('M1');

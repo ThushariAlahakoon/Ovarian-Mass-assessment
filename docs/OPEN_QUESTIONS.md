@@ -19,7 +19,7 @@ These rules are marked `"sourceStatus": "external-unverified"` in the rules file
    - M5 colour score 4
 
    **Please check these against the IOTA 2026 updated terms (UOG 2026;67:702–724)** in case any wording changed.
-2. **What counts as "irregular" for M4.** The engine treats an irregular multilocular-solid lesion as irregular walls/septa **or** an irregular solid surface. Is that correct?
+2. ~~**What counts as "irregular" for M4.**~~ **Answered 2026-11-07:** irregular walls/septa only. An irregular solid surface alone does not make a multilocular-solid lesion M4. (Rules file version 1.0.0-draft.2.)
 3. **RMI-I scoring values.** The protocol names RMI-I, the five U features and the >200 threshold, but not the scores. I used Jacobs 1990:
    - U = 0, 1 or 3 for 0, 1 or ≥2 features
    - M = 1 if premenopausal, 3 if postmenopausal
@@ -30,7 +30,7 @@ These rules are marked `"sourceStatus": "external-unverified"` in the rules file
    - *ascites*: ascites recorded
    - *metastases*: peritoneal nodules or omental cake on the upper-abdomen survey
 
-   Is this the mapping you want?
+   **Answered 2026-11-07:** yes, use this mapping.
 
 ## B. Ambiguities in the protocol: the engine's current interpretation
 
